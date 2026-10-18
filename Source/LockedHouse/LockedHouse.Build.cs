@@ -24,20 +24,7 @@ public class LockedHouse : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] { });
 
 		PublicIncludePaths.AddRange(new string[] {
-			"LockedHouse",
-			"LockedHouse/Variant_Platforming",
-			"LockedHouse/Variant_Platforming/Animation",
-			"LockedHouse/Variant_Combat",
-			"LockedHouse/Variant_Combat/AI",
-			"LockedHouse/Variant_Combat/Animation",
-			"LockedHouse/Variant_Combat/Gameplay",
-			"LockedHouse/Variant_Combat/Interfaces",
-			"LockedHouse/Variant_Combat/UI",
-			"LockedHouse/Variant_SideScrolling",
-			"LockedHouse/Variant_SideScrolling/AI",
-			"LockedHouse/Variant_SideScrolling/Gameplay",
-			"LockedHouse/Variant_SideScrolling/Interfaces",
-			"LockedHouse/Variant_SideScrolling/UI"
+			"LockedHouse"
 		});
 
 		// Uncomment if you are using Slate UI
