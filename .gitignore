@@ -1,0 +1,52 @@
+# Unreal Engine .gitignore
+
+# Generated folders (rebuilt automatically)
+Binaries/
+Build/
+DerivedDataCache/
+Intermediate/
+Saved/
+
+# Plugin generated folders
+Plugins/**/Binaries/
+Plugins/**/Intermediate/
+
+# Visual Studio / Rider
+.vs/
+.idea/
+*.sln
+*.suo
+*.opensdf
+*.sdf
+*.VC.db
+*.VC.opendb
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.xcodeproj
+*.xcworkspace
+
+# Visual Studio Code (keep shared settings if you want them)
+.vscode/
+
+# Compiled / debug files
+*.pdb
+*.exe
+*.dll
+*.exp
+*.lib
+*.ilk
+*.obj
+*.o
+*.a
+*.dylib
+
+# Packaged builds (don't commit; share them as zip releases instead)
+PackagedBuilds/
+Packaged/
+
+# Misc
+*.DS_Store
+Thumbs.db
+*.log
+*.tmp
