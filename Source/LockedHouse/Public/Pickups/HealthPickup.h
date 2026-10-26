@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/Interactable.h"
 #include "HealthPickup.generated.h"
 
 class USphereComponent;
@@ -11,7 +12,7 @@ class UStaticMeshComponent;
 class UprimitiveComponent;
 
 UCLASS()
-class LOCKEDHOUSE_API AHealthPickup : public AActor
+class LOCKEDHOUSE_API AHealthPickup : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 	
@@ -22,12 +23,14 @@ public:
 	void OnPickedUp(AActor* Collector);
 
 protected:
-	virtual void BeginPlay() override;
+	//virtual void BeginPlay() override;
 
 	virtual void OnPickedUp_Implementation(AActor* Collector);
 
-	UFUNCTION()
-	void HandleCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void Interact_Implementation(AActor* Collector);
+
+	//UFUNCTION()
+	//void HandleCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup")
 	TObjectPtr<USphereComponent> Sphere;

@@ -8,9 +8,12 @@ AHealthPickup::AHealthPickup()
 	PrimaryActorTick.bCanEverTick = false;
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
+	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	Sphere->SetCollisionObjectType(ECC_WorldDynamic);
+	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
+	Sphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	Sphere->SetGenerateOverlapEvents(false);
 	Sphere->SetSphereRadius(60.f);
-	Sphere->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
-	Sphere->SetGenerateOverlapEvents(true);
 	SetRootComponent(Sphere);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
@@ -19,36 +22,32 @@ AHealthPickup::AHealthPickup()
 
 }
 
-// Called when the game starts or when spawned
-void AHealthPickup::BeginPlay()
+void AHealthPickup::OnPickedUp_Implementation(AActor* Collector)
 {
-	Super::BeginPlay();
-
-	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AHealthPickup::HandleCollision);
-	
+	UE_LOG(LogTemp, Log, TEXT("%s picked up by %s"), *GetName(), *GetNameSafe(Collector));
 }
 
-void AHealthPickup::HandleCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AHealthPickup::Interact_Implementation(AActor* Interactor)
 {
-	if (!IsValid(OtherActor) || OtherActor == this || OtherComponent != OtherActor->GetRootComponent())
+	if (!IsValid(Interactor))
 	{
 		return;
 	}
 
-	UHealthComponent* HealthComponent = OtherActor->FindComponentByClass<UHealthComponent>();
+	UHealthComponent* HealthComponent = Interactor->FindComponentByClass<UHealthComponent>();
 	if (!HealthComponent || HealthComponent->IsFull() || HealthComponent->IsDead())
 	{
 		return;
 	}
 
-	const float HealthBefore = HealthComponent->GetHealth();
+
 	HealthComponent->Heal(HealAmount);
 	--UsesLeft;
 
-	UE_LOG(LogTemp, Log, TEXT("%s healed %s: %.1f -> %.1f (%d uses left)"),
-	*GetName(), *OtherActor->GetName(), HealthBefore, HealthComponent->GetHealth(), UsesLeft);
+	OnPickedUp(Interactor);
 
-	OnPickedUp(OtherActor);
+	UE_LOG(LogTemp, Log, TEXT("current health: %f"), HealthComponent->GetHealth());
+
 
 	if (UsesLeft <= 0)
 	{
@@ -56,9 +55,3 @@ void AHealthPickup::HandleCollision(UPrimitiveComponent* OverlappedComponent, AA
 		Destroy();
 	}
 }
-
-void AHealthPickup::OnPickedUp_Implementation(AActor* Collector)
-{
-	UE_LOG(LogTemp, Log, TEXT("%s picked up by %s"), *GetName(), *GetNameSafe(Collector));
-}
-
