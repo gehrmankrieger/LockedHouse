@@ -9,7 +9,6 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
-class UprimitiveComponent;
 
 UCLASS()
 class LOCKEDHOUSE_API AHealthPickup : public AActor, public IInteractable
@@ -23,14 +22,10 @@ public:
 	void OnPickedUp(AActor* Collector);
 
 protected:
-	//virtual void BeginPlay() override;
 
 	virtual void OnPickedUp_Implementation(AActor* Collector);
 
-	virtual void Interact_Implementation(AActor* Collector);
-
-	//UFUNCTION()
-	//void HandleCollision(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void Interact_Implementation(AActor* Collector) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup")
 	TObjectPtr<USphereComponent> Sphere;
