@@ -22,18 +22,21 @@ bool UInventoryComponent::PickUp(FGameplayTag Tag)
 	KeyTags.AddTag(Tag);
 	UE_LOG(LogTemp, Warning, TEXT("%s added to Inventory: %d"), *Tag.ToString(), HasPickedUp(Tag));
 
-	OnItemPickup.Broadcast(Tag, StoreInInventory);
+	OnInventoryChanged.Broadcast(Tag, true);
 
 	return true;
 }
 
 void UInventoryComponent::Drop(FGameplayTag Tag)
 {
-	if (KeyTags.HasTagExact(Tag))
+	if (KeyTags.RemoveTag(Tag))
 	{
-		KeyTags.RemoveTag(Tag);
-		UE_LOG(LogTemp, Warning, TEXT("%s is removed from Inventory."), *Tag.ToString());
-	}
+		UE_LOG(LogTemp, Log, TEXT("%s is removed from Inventory."), *Tag.ToString());
+		OnInventoryChanged.Broadcast(Tag, false);
 
-	OnItemPickup.Broadcast(Tag, StoreInInventory);
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Couldn't remove %s from Inventory."), *Tag.ToString());
+	}
 }

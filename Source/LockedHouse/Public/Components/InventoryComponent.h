@@ -7,7 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "InventoryComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnItemPickupSignature, FGameplayTag, Tag, bool, IntoInventory);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInventoryChangedSignature, FGameplayTag, Tag, bool, bAdded);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LOCKEDHOUSE_API UInventoryComponent : public UActorComponent
@@ -18,10 +18,8 @@ public:
 	UInventoryComponent();
 
 	UPROPERTY(BlueprintAssignable, Category = "Inventory")
-	FOnItemPickupSignature OnItemPickup;
+	FOnInventoryChangedSignature OnInventoryChanged;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Inventory")
-	bool StoreInInventory;
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
 	bool HasPickedUp(FGameplayTag Tag) const { return KeyTags.HasTagExact(Tag); }
