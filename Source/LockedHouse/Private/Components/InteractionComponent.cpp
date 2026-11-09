@@ -62,7 +62,7 @@ AActor* UInteractionComponent::FindInteractable() const
 	if (bDrawDebug)
 	{
 		const FVector LineEnd = bHit ? FVector(Hit.ImpactPoint) : End;
-		DrawDebugLine(GetWorld(), Start, LineEnd, bHit ? FColor::Green : FColor::Red);
+		DrawDebugLine(GetWorld(), Start, LineEnd, bHit ? FColor::Green : FColor::Red, false, 3.f);
 
 		if (!bHit)
 		{
