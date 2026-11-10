@@ -42,7 +42,10 @@ protected:
 	FGameplayTag UnlockedTag;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
-	bool bSealed;
+	bool bSealed = false;
+
+	UFUNCTION(BlueprintImplementableEvent, Category="Door")
+	void OnLocked();
 
 public:	
 	// Called every frame

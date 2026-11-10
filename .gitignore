@@ -6,6 +6,7 @@ Build/
 DerivedDataCache/
 Intermediate/
 Saved/
+Content/Fab
 
 # Plugin generated folders
 Plugins/**/Binaries/
