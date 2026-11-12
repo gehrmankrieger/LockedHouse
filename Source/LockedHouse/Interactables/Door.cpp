@@ -3,6 +3,7 @@
 
 #include "Interactables/Door.h"
 #include "Components/InventoryComponent.h"
+#include "Components/TimelineComponent.h"
 #include "WorldStateSubsystem.h"
 
 // Sets default values
@@ -16,6 +17,9 @@ ADoor::ADoor()
 
 	FrameMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FrameMesh"));
 	FrameMesh->SetupAttachment(SceneRoot);
+	FrameMesh->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	FrameMesh->SetCollisionResponseToAllChannels(ECR_Ignore);
+	FrameMesh->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
 
 	Hinge = CreateDefaultSubobject<USceneComponent>(TEXT("Hinge"));
 	Hinge->SetupAttachment(SceneRoot);
@@ -23,12 +27,25 @@ ADoor::ADoor()
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
 	DoorMesh->SetupAttachment(Hinge);
 
+	Timeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("Timeline"));
+	
 }
 
 // Called when the game starts or when spawned
 void ADoor::BeginPlay()
 {
 	Super::BeginPlay();
+
+	FOnTimelineFloat SwingUpdate;
+
+	if (!IsValid(Curve))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s: Curve not set"), *GetName());
+		return;
+	}
+
+	SwingUpdate.BindUFunction(this, FName("Swing"));
+	Timeline->AddInterpFloat(Curve, SwingUpdate);
 	
 }
 
@@ -68,6 +85,7 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 	if (!Board->CheckDoorTag(UnlockedTag))
 	{
 
+
 		UInventoryComponent* Inventory = Interactor->FindComponentByClass<UInventoryComponent>();
 
 		if (!IsValid(Inventory))
@@ -93,9 +111,20 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 	{
 		UE_LOG(LogTemp, Log, TEXT("%s: unlocked, toggle here (step 6)"), *GetName());
 	}
+
+	if (Board->CheckDoorTag(UnlockedTag))
+	{
+		!bIsOpen ? Timeline->Play() : Timeline->Reverse();
+		bIsOpen = !bIsOpen;
+	}
 	
 
 	UE_LOG(LogTemp, Log, TEXT("Interacted with door %s, it needs %s"), *UnlockedTag.ToString(), *RequiredKey.ToString());
+}
+
+void ADoor::Swing(float Value)
+{
+	Hinge->SetRelativeRotation(FRotator(0.f, Value * OpenAngle, 0.f));
 }
 
 // Called every frame

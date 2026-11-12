@@ -7,6 +7,7 @@ void UWorldStateSubsystem::AddDoorTag(FGameplayTag Tag)
 {
 	if (!Tag.IsValid())
 	{
+		UE_LOG(LogTemp, Log, TEXT("Invalid Door Tag"));
 		return;
 	}
 

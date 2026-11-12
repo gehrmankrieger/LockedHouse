@@ -8,6 +8,8 @@
 #include "GameplayTagContainer.h"
 #include "Door.generated.h"
 
+class UTimelineComponent;
+
 UCLASS()
 class LOCKEDHOUSE_API ADoor : public AActor, public IInteractable
 {
@@ -16,6 +18,9 @@ class LOCKEDHOUSE_API ADoor : public AActor, public IInteractable
 public:	
 	// Sets default values for this actor's properties
 	ADoor();
+
+	UFUNCTION()
+	void Swing(float Value);
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,8 +46,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door", meta = (Categories = "World.Door"))
 	FGameplayTag UnlockedTag;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Door")
 	bool bSealed = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Door")
+	TObjectPtr<UTimelineComponent> Timeline;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
+	UCurveFloat* Curve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
+	float OpenAngle = 90.f;
+
+	UPROPERTY()
+	bool bIsOpen;
 
 	UFUNCTION(BlueprintImplementableEvent, Category="Door")
 	void OnLocked();
