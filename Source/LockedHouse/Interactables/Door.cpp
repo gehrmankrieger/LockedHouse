@@ -114,6 +114,7 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 
 	if (Board->CheckDoorTag(UnlockedTag))
 	{
+		UE_LOG(LogTemp, Log, TEXT("unlocked"));
 		!bIsOpen ? Timeline->Play() : Timeline->Reverse();
 		bIsOpen = !bIsOpen;
 	}
@@ -124,6 +125,7 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 
 void ADoor::Swing(float Value)
 {
+	UE_LOG(LogTemp, Log, TEXT("swing"));
 	Hinge->SetRelativeRotation(FRotator(0.f, Value * OpenAngle, 0.f));
 }
 
