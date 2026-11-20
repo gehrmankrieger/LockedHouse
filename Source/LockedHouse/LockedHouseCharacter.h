@@ -78,12 +78,17 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> AimAction;
 
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UTimelineComponent> AimTimeline;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
 	UCurveFloat* Curve;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float ExploreSpeed = 440;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float AimSpeed = 100;
 
 
 private:
@@ -116,6 +121,8 @@ protected:
 	void StopAim();
 
 	bool IsAiming() const { return bIsAiming; }
+
+	void UpdateMovementMode();
 
 public:
 

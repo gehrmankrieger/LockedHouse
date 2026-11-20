@@ -45,10 +45,10 @@ ALockedHouseCharacter::ALockedHouseCharacter()
 	// instead of recompiling to adjust them
 	GetCharacterMovement()->JumpZVelocity = 500.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
+	GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
@@ -73,10 +73,6 @@ void ALockedHouseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		
-		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
 		// Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALockedHouseCharacter::Move);
 		EnhancedInputComponent->BindAction(MouseLookAction, ETriggerEvent::Triggered, this, &ALockedHouseCharacter::Look);
@@ -98,7 +94,7 @@ void ALockedHouseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 void ALockedHouseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
+	UpdateMovementMode();
 	FOnTimelineFloat AimUpdate;
 
 	if (!IsValid(Curve))
@@ -190,6 +186,7 @@ void ALockedHouseCharacter::StartAim()
 	UE_LOG(LogTemp, Warning, TEXT("StartAim"));
 	bIsAiming = true;
 	AimTimeline->Play();
+	UpdateMovementMode();
 }
 
 void ALockedHouseCharacter::StopAim()
@@ -197,4 +194,19 @@ void ALockedHouseCharacter::StopAim()
 	UE_LOG(LogTemp, Warning, TEXT("StopAim"));
 	bIsAiming = false;
 	AimTimeline->Reverse();
+	UpdateMovementMode();
+}
+
+void ALockedHouseCharacter::UpdateMovementMode()
+{
+	if (IsAiming())
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		GetCharacterMovement()->MaxWalkSpeed = AimSpeed;
+	}
+	else
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		GetCharacterMovement()->MaxWalkSpeed = ExploreSpeed;
+	}
 }
