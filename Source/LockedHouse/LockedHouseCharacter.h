@@ -85,10 +85,10 @@ protected:
 	UCurveFloat* Curve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float ExploreSpeed = 440;
+	float ExploreSpeed = 450;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float AimSpeed = 100;
+	float AimSpeed = 200;
 
 
 private:
