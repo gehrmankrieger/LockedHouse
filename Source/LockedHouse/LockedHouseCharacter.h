@@ -120,8 +120,6 @@ protected:
 
 	void StopAim();
 
-	bool IsAiming() const { return bIsAiming; }
-
 	void UpdateMovementMode();
 
 public:
@@ -144,6 +142,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Input")
 	void UpdateAimBlend(float Value);
+
+	bool IsAiming() const { return bIsAiming; }
+
 
 public:
 

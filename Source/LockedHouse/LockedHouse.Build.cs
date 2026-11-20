@@ -19,7 +19,8 @@ public class LockedHouse : ModuleRules
 			"GameplayStateTreeModule",
 			"UMG",
 			"Slate",
-            "GameplayTags"
+            "GameplayTags",
+			"AnimGraphRuntime"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
