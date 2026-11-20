@@ -118,9 +118,6 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 		!bIsOpen ? Timeline->Play() : Timeline->Reverse();
 		bIsOpen = !bIsOpen;
 	}
-	
-
-	UE_LOG(LogTemp, Log, TEXT("Interacted with door %s, it needs %s"), *UnlockedTag.ToString(), *RequiredKey.ToString());
 }
 
 void ADoor::Swing(float Value)
@@ -129,7 +126,6 @@ void ADoor::Swing(float Value)
 	Hinge->SetRelativeRotation(FRotator(0.f, Value * OpenAngle, 0.f));
 }
 
-// Called every frame
 void ADoor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);

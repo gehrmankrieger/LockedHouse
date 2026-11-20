@@ -10,10 +10,25 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "Components/TimelineComponent.h"
 #include "LockedHouse.h"
 
 ALockedHouseCharacter::ALockedHouseCharacter()
 {
+	// Set Aim Timeline
+	AimTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("AimTimeline"));
+
+	
+
+	// Set camera pose settings based on view type (Explore/Aim)
+	ExplorePose.ArmLength = 220.f;
+	ExplorePose.SocketOffset = FVector(0, 45, 20);
+	ExplorePose.FOV = 90.f;
+
+	AimPose.ArmLength = 110.f;
+	AimPose.SocketOffset = FVector(0, 55, 10);
+	ExplorePose.FOV = 70.f;
+
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 		
@@ -38,8 +53,11 @@ ALockedHouseCharacter::ALockedHouseCharacter()
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->TargetOffset = FVector(0, 0, 50);
 	CameraBoom->bUsePawnControlRotation = true;
+	CameraBoom->bEnableCameraLag = true;
+	CameraBoom->CameraLagSpeed = 10;
+	CameraBoom->CameraLagMaxDistance = 40;
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -65,11 +83,36 @@ void ALockedHouseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALockedHouseCharacter::Look);
+
+		// Aiming
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ALockedHouseCharacter::StartAim);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ALockedHouseCharacter::StopAim);
+
 	}
 	else
 	{
 		UE_LOG(LogLockedHouse, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
 	}
+}
+
+void ALockedHouseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	FOnTimelineFloat AimUpdate;
+
+	if (!IsValid(Curve))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s: Curve not set"), *GetName());
+		return;
+	}
+
+	AimUpdate.BindUFunction(this, "UpdateAimBlend");
+	AimTimeline->AddInterpFloat(Curve, AimUpdate);
+
+	CameraBoom->TargetArmLength = ExplorePose.ArmLength;
+	CameraBoom->SocketOffset = ExplorePose.SocketOffset;
+	FollowCamera->SetFieldOfView(ExplorePose.FOV);
 }
 
 void ALockedHouseCharacter::Move(const FInputActionValue& Value)
@@ -130,4 +173,28 @@ void ALockedHouseCharacter::DoJumpEnd()
 {
 	// signal the character to stop jumping
 	StopJumping();
+}
+
+void ALockedHouseCharacter::UpdateAimBlend(float Alpha)
+{
+
+	UE_LOG(LogTemp, Warning, TEXT("UpdateAimBlend"));
+	CameraBoom->TargetArmLength = FMath::Lerp(ExplorePose.ArmLength, AimPose.ArmLength, Alpha);
+	CameraBoom->SocketOffset = FMath::Lerp(ExplorePose.SocketOffset, AimPose.SocketOffset, Alpha);
+	FollowCamera->SetFieldOfView(FMath::Lerp(ExplorePose.FOV, AimPose.FOV, Alpha));
+
+}
+
+void ALockedHouseCharacter::StartAim()
+{
+	UE_LOG(LogTemp, Warning, TEXT("StartAim"));
+	bIsAiming = true;
+	AimTimeline->Play();
+}
+
+void ALockedHouseCharacter::StopAim()
+{
+	UE_LOG(LogTemp, Warning, TEXT("StopAim"));
+	bIsAiming = false;
+	AimTimeline->Reverse();
 }

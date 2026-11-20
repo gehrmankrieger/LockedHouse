@@ -7,10 +7,27 @@
 #include "Logging/LogMacros.h"
 #include "LockedHouseCharacter.generated.h"
 
+class UTimelineComponent;
+class UCurveFloat;
 class USpringArmComponent;
 class UCameraComponent;
 class UInputAction;
 struct FInputActionValue;
+
+USTRUCT(BlueprintType)
+struct FLHCameraPose
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float ArmLength = 220.f;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	FVector SocketOffset = FVector::ZeroVector;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float FOV = 90.f;
+};
 
 DECLARE_LOG_CATEGORY_EXTERN(LogTemplateCharacter, Log, All);
 
@@ -30,6 +47,12 @@ class ALockedHouseCharacter : public ACharacter
 	/** Follow camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Components", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
+
+	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	FLHCameraPose AimPose;
+
+	UPROPERTY(EditAnywhere, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	FLHCameraPose ExplorePose;
 	
 protected:
 
@@ -52,6 +75,22 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> InteractAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> AimAction;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
+	TObjectPtr<UTimelineComponent> AimTimeline;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Input")
+	UCurveFloat* Curve;
+
+
+private:
+
+	UPROPERTY()
+	bool bIsAiming = false;
+
 public:
 
 	/** Constructor */
@@ -62,6 +101,8 @@ protected:
 	/** Initialize input action bindings */
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	virtual void BeginPlay() override;
+
 protected:
 
 	/** Called for movement input */
@@ -69,6 +110,12 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
+
+	void StartAim();
+
+	void StopAim();
+
+	bool IsAiming() const { return bIsAiming; }
 
 public:
 
@@ -87,6 +134,9 @@ public:
 	/** Handles jump pressed inputs from either controls or UI interfaces */
 	UFUNCTION(BlueprintCallable, Category="Input")
 	virtual void DoJumpEnd();
+
+	UFUNCTION(BlueprintCallable, Category="Input")
+	void UpdateAimBlend(float Value);
 
 public:
 
