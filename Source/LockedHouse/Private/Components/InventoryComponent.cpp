@@ -40,3 +40,50 @@ void UInventoryComponent::Drop(FGameplayTag Tag)
 		UE_LOG(LogTemp, Warning, TEXT("Couldn't remove %s from Inventory."), *Tag.ToString());
 	}
 }
+
+/* Refactor, similarities with PickUp. */
+bool UInventoryComponent::AddSupply(FGameplayTag Tag, int32 Amount)
+{
+	if (!Tag.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Tag: %s."), *Tag.ToString());
+		return false;
+	}
+
+	if (Amount <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Amount %d for %s."), Amount, *Tag.ToString());
+		return false;
+	}
+
+	Supplies.FindOrAdd(Tag) += Amount;
+	OnSupplyChanged.Broadcast(Tag, Supplies.FindRef(Tag));
+	UE_LOG(LogTemp, Log, TEXT("Supply added: %s. %d available."), *Tag.ToString(), Supplies.FindRef(Tag));
+	return true;
+}
+
+bool UInventoryComponent::UseSupply(FGameplayTag Tag, int32 Amount)
+{
+	if (!Tag.IsValid())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Tag: %s."), *Tag.ToString());
+		return false;
+	}
+
+	if (Amount <= 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Amount %d for %s."), Amount, *Tag.ToString());
+		return false;
+	}
+
+	if (GetSupplyCount(Tag) < Amount)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Insufficient Supply: %s."), *Tag.ToString());
+		return false;
+	}
+
+	Supplies.FindOrAdd(Tag) -= Amount;
+	OnSupplyChanged.Broadcast(Tag, Supplies.FindRef(Tag));
+	UE_LOG(LogTemp, Log, TEXT("Supply used: %s."), *Tag.ToString());
+	return true;
+}

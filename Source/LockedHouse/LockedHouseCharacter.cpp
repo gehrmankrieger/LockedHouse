@@ -173,17 +173,13 @@ void ALockedHouseCharacter::DoJumpEnd()
 
 void ALockedHouseCharacter::UpdateAimBlend(float Alpha)
 {
-
-	UE_LOG(LogTemp, Warning, TEXT("UpdateAimBlend"));
 	CameraBoom->TargetArmLength = FMath::Lerp(ExplorePose.ArmLength, AimPose.ArmLength, Alpha);
 	CameraBoom->SocketOffset = FMath::Lerp(ExplorePose.SocketOffset, AimPose.SocketOffset, Alpha);
 	FollowCamera->SetFieldOfView(FMath::Lerp(ExplorePose.FOV, AimPose.FOV, Alpha));
-
 }
 
 void ALockedHouseCharacter::StartAim()
 {
-	UE_LOG(LogTemp, Warning, TEXT("StartAim"));
 	bIsAiming = true;
 	AimTimeline->Play();
 	UpdateMovementMode();
@@ -191,7 +187,6 @@ void ALockedHouseCharacter::StartAim()
 
 void ALockedHouseCharacter::StopAim()
 {
-	UE_LOG(LogTemp, Warning, TEXT("StopAim"));
 	bIsAiming = false;
 	AimTimeline->Reverse();
 	UpdateMovementMode();

@@ -9,6 +9,8 @@ namespace LockedHouseTags
 	UE_DEFINE_GAMEPLAY_TAG(Item_Key_Yard, "Item.Key.Yard");
 	UE_DEFINE_GAMEPLAY_TAG(Item_Key_Masters, "Item.Key.Masters");
 	UE_DEFINE_GAMEPLAY_TAG(Item_Key_Bathroom, "Item.Key.Bathroom");
+	UE_DEFINE_GAMEPLAY_TAG(Item_Supply_Bandage, "Item.Supply.Bandage");
+	UE_DEFINE_GAMEPLAY_TAG(Item_Supply_Ammo, "Item.Supply.Ammo");
 	UE_DEFINE_GAMEPLAY_TAG(World_Door_Storage_Unlocked, "World.Door.Storage.Unlocked");
 	UE_DEFINE_GAMEPLAY_TAG(World_Door_Kitchen_Unlocked, "World.Door.Kitchen.Unlocked");
 	UE_DEFINE_GAMEPLAY_TAG(World_Door_Yard_Unlocked, "World.Door.Yard.Unlocked");
