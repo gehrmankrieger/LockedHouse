@@ -8,7 +8,7 @@
 #include "InventoryComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnInventoryChangedSignature, FGameplayTag, Tag, bool, bAdded);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSupplyChangedSignature, FGameplayTag, DelegateTag, int32, DelegateAmount);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnSupplyChangedSignature, FGameplayTag, ChangedTag, int32, NewCount);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LOCKEDHOUSE_API UInventoryComponent : public UActorComponent
@@ -41,6 +41,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Supply")
 	int32 GetSupplyCount(FGameplayTag Tag) const { return Supplies.FindRef(Tag); }
+
+	UFUNCTION(BlueprintCallable, Category = "Inventory")
+	const FGameplayTagContainer& GetKeys() const { return KeyTags; }
 
 protected:
 	virtual void BeginPlay() override;
