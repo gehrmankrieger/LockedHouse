@@ -55,6 +55,5 @@ void ASupplyPickup::Interact_Implementation(AActor* Interactor)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s not added to supplies."), *SupplyTag.ToString());
 	}
-
 }
 

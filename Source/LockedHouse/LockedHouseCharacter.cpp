@@ -11,14 +11,15 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
 #include "Components/TimelineComponent.h"
+#include "Components/InventoryComponent.h"
+#include "Components/HealthComponent.h"
+#include "LockedHouseGameplayTags.h"
 #include "LockedHouse.h"
 
 ALockedHouseCharacter::ALockedHouseCharacter()
 {
 	// Set Aim Timeline
 	AimTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("AimTimeline"));
-
-	
 
 	// Set camera pose settings based on view type (Explore/Aim)
 	ExplorePose.ArmLength = 220.f;
@@ -84,6 +85,8 @@ void ALockedHouseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ALockedHouseCharacter::StartAim);
 		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ALockedHouseCharacter::StopAim);
 
+		// Bandaging
+		EnhancedInputComponent->BindAction(UseBandageAction, ETriggerEvent::Started, this, &ALockedHouseCharacter::UseBandage);
 	}
 	else
 	{
@@ -204,4 +207,41 @@ void ALockedHouseCharacter::UpdateMovementMode()
 		GetCharacterMovement()->bOrientRotationToMovement = true;
 		GetCharacterMovement()->MaxWalkSpeed = ExploreSpeed;
 	}
+}
+
+void ALockedHouseCharacter::UseBandage()
+{
+	UInventoryComponent* Inventory = FindComponentByClass<UInventoryComponent>();
+	
+	if (!IsValid(Inventory))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Inventory Component: %s"), *GetName());
+		return;
+	}
+
+	UHealthComponent* Health = FindComponentByClass<UHealthComponent>();
+
+	if (!IsValid(Health))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Health Component: %s"), *GetName());
+		return;
+	}
+
+	if (Health->IsFull())
+	{
+		UE_LOG(LogTemp, Log, TEXT("Health is full: %.0f/%.0f"), Health->GetHealth(), Health->GetMaxHealth());
+		return;
+	}
+
+	if (!Inventory->UseSupply(LockedHouseTags::Item_Supply_Bandage))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No bandages."));
+		return;
+
+	}
+
+	Health->Heal(BandageHealAmount);
+
+	UE_LOG(LogTemp, Warning, TEXT("Healed for %.0f. Health is now %.0f."), BandageHealAmount, Health->GetHealth());
+
 }

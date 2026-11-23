@@ -78,6 +78,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> AimAction;
 
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> UseBandageAction;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UTimelineComponent> AimTimeline;
 
@@ -85,11 +88,13 @@ protected:
 	UCurveFloat* Curve;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float ExploreSpeed = 450;
+	float ExploreSpeed = 450.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float AimSpeed = 200;
+	float AimSpeed = 200.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float BandageHealAmount = 10.f;
 
 private:
 
@@ -121,6 +126,8 @@ protected:
 	void StopAim();
 
 	void UpdateMovementMode();
+
+	void UseBandage();
 
 public:
 
