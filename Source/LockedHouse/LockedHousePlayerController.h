@@ -8,6 +8,7 @@
 
 class UInputMappingContext;
 class UUserWidget;
+class ULHHUDWidget;
 
 /**
  *  Basic PlayerController class for a third person game
@@ -48,5 +49,13 @@ protected:
 
 	/** Returns true if the player should use UMG touch controls */
 	bool ShouldUseTouchControls() const;
+
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<ULHHUDWidget> HUDWidgetClass;
+
+	UPROPERTY()
+	TObjectPtr<ULHHUDWidget> HUDWidget;
+
+	virtual void OnPossess(APawn* InPawn) override;
 
 };

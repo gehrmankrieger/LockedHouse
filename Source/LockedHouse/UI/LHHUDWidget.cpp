@@ -55,7 +55,8 @@ void ULHHUDWidget::RebuildKeyList()
 	{
 		UTextBlock* Line = WidgetTree->ConstructWidget<UTextBlock>(UTextBlock::StaticClass());
 		FText* Found = KeyNames.Find(Tag);
-		Found ? Line->SetText(*Found) : Line->SetText(FText::FromString(Tag.ToString()));
+		Line->SetText(Found ? *Found : FText::FromString(Tag.ToString()));
+		KeyList->AddChildToVerticalBox(Line);
 	}
 }
 

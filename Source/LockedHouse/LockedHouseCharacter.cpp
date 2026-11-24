@@ -160,6 +160,9 @@ void ALockedHouseCharacter::DoLook(float Yaw, float Pitch)
 		AddControllerYawInput(Yaw);
 		AddControllerPitchInput(Pitch);
 	}
+
+	UE_LOG(LogTemp, Log, TEXT("Look %.2f %.2f"), Yaw, Pitch);
+	UE_LOG(LogTemp, Log, TEXT("Control yaw %.1f"), GetControlRotation().Yaw);
 }
 
 void ALockedHouseCharacter::DoJumpStart()
