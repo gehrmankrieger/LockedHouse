@@ -28,7 +28,7 @@ ALockedHouseCharacter::ALockedHouseCharacter()
 
 	AimPose.ArmLength = 110.f;
 	AimPose.SocketOffset = FVector(0, 55, 10);
-	ExplorePose.FOV = 70.f;
+	AimPose.FOV = 70.f;
 
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -100,6 +100,10 @@ void ALockedHouseCharacter::BeginPlay()
 	UpdateMovementMode();
 	FOnTimelineFloat AimUpdate;
 
+	CameraBoom->TargetArmLength = ExplorePose.ArmLength;
+	CameraBoom->SocketOffset = ExplorePose.SocketOffset;
+	FollowCamera->SetFieldOfView(ExplorePose.FOV);
+
 	if (!IsValid(Curve))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s: Curve not set"), *GetName());
@@ -109,9 +113,7 @@ void ALockedHouseCharacter::BeginPlay()
 	AimUpdate.BindUFunction(this, "UpdateAimBlend");
 	AimTimeline->AddInterpFloat(Curve, AimUpdate);
 
-	CameraBoom->TargetArmLength = ExplorePose.ArmLength;
-	CameraBoom->SocketOffset = ExplorePose.SocketOffset;
-	FollowCamera->SetFieldOfView(ExplorePose.FOV);
+
 }
 
 void ALockedHouseCharacter::Move(const FInputActionValue& Value)
@@ -160,9 +162,6 @@ void ALockedHouseCharacter::DoLook(float Yaw, float Pitch)
 		AddControllerYawInput(Yaw);
 		AddControllerPitchInput(Pitch);
 	}
-
-	UE_LOG(LogTemp, Log, TEXT("Look %.2f %.2f"), Yaw, Pitch);
-	UE_LOG(LogTemp, Log, TEXT("Control yaw %.1f"), GetControlRotation().Yaw);
 }
 
 void ALockedHouseCharacter::DoJumpStart()
