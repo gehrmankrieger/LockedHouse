@@ -91,5 +91,8 @@ void ULHHUDWidget::HandleInventoryChanged(FGameplayTag Tag, bool bAdded)
 
 void ULHHUDWidget::HandleSupplyChanged(FGameplayTag ChangedTag, int32 NewCount)
 {
+	BandageCountText->SetFontSize(50.f);
+
+	AmmoCountText->SetFontSize(50.f);
 	RefreshCounts();
 }

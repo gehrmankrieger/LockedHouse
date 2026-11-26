@@ -20,7 +20,8 @@ public class LockedHouse : ModuleRules
 			"UMG",
 			"Slate",
             "GameplayTags",
-			"AnimGraphRuntime"
+			"AnimGraphRuntime",
+			"PhysicsCore"
         });
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
