@@ -69,7 +69,7 @@ AActor* UInteractionComponent::FindInteractable() const
 	}
 
 	AActor* HitActor = Hit.GetActor();
-	if (!IsValid(HitActor) || !HitActor->Implements<UInteractable>() || !IInteractable::Execute_CanInteract(GetOwner(), HitActor))
+	if (!IsValid(HitActor) || !HitActor->Implements<UInteractable>() || !IInteractable::Execute_CanInteract(HitActor, GetOwner()))
 	{
 		return nullptr;
 	}

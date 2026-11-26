@@ -4,6 +4,8 @@
 #include "Components/WeaponComponent.h"
 #include "GameFramework/Controller.h"
 #include "LockedHouseCharacter.h"
+#include "LockedHouseCollision.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -34,6 +36,18 @@ void UWeaponComponent::Fire()
 	FVector Start = Where;
 	FVector End = Start + Facing.Vector() * WeaponRange;
 
+	FHitResult Hit;
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, WeaponCollision::WeaponChannel);
+
+	if (bDrawDebug)
+	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Red, false, 3.f);
+	}
+
+	if (!bHit)
+	{
+		return;
+	}
 }
 
 void UWeaponComponent::Reload()

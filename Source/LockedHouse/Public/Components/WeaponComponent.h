@@ -42,6 +42,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
 	float WeaponRange;
 
+	UPROPERTY(EditAnywhere, Category = "Weapon|Debug")
+	bool bDrawDebug = true;
+
 
 public:	
 	// Called every frame
