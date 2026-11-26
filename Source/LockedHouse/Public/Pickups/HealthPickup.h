@@ -9,6 +9,7 @@
 
 class USphereComponent;
 class UStaticMeshComponent;
+class UHealthComponent;
 
 UCLASS()
 class LOCKEDHOUSE_API AHealthPickup : public AActor, public IInteractable
@@ -27,6 +28,8 @@ protected:
 
 	virtual void Interact_Implementation(AActor* Collector) override;
 
+	virtual bool CanInteract_Implementation(AActor* Interactor) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Pickup")
 	TObjectPtr<USphereComponent> Sphere;
 
@@ -38,5 +41,8 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup", meta = (ClampMin = "1"));
 	int32 UsesLeft = 3;
+
+	UFUNCTION()
+	UHealthComponent* FindUHealthComponent(AActor* Who) const;
 
 };

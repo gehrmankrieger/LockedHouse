@@ -2,6 +2,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/InventoryComponent.h"
+#include "LockedHouseCollision.h"
 
 AKeyPickup::AKeyPickup()
 {
@@ -9,15 +10,17 @@ AKeyPickup::AKeyPickup()
 
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	Sphere->SetCollisionObjectType(ECC_Visibility);
+	Sphere->SetCollisionObjectType(ECC_WorldDynamic);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	Sphere->SetCollisionResponseToChannel(WeaponCollision::WeaponChannel, ECR_Ignore);
 	Sphere->SetGenerateOverlapEvents(false);
 	Sphere->SetSphereRadius(60.f);
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Sphere);
 	Mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	Mesh->SetCollisionResponseToAllChannels(ECR_Ignore);
 
 }
 

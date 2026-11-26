@@ -29,7 +29,6 @@ void UInteractionComponent::TryInteract()
 	}
 
 	IInteractable::Execute_Interact(Target, GetOwner());
-
 }
 
 AActor* UInteractionComponent::FindInteractable() const
@@ -54,24 +53,23 @@ AActor* UInteractionComponent::FindInteractable() const
 	const FVector Start = ViewLocation;
 	const FVector End = Start + ViewRotation.Vector() * (CameraToPawn + InteractRange);
 
-	FCollisionQueryParams Params(SCENE_QUERY_STAT(InteractTrace), false, OwnerPawn);
-
 	FHitResult Hit;
-	const bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, Params);
+	const bool bHit = GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility);
 
 	if (bDrawDebug)
 	{
 		const FVector LineEnd = bHit ? FVector(Hit.ImpactPoint) : End;
 		DrawDebugLine(GetWorld(), Start, LineEnd, bHit ? FColor::Green : FColor::Red, false, 3.f);
 
-		if (!bHit)
-		{
-			return nullptr;
-		}
+	}
+
+	if (!bHit)
+	{
+		return nullptr;
 	}
 
 	AActor* HitActor = Hit.GetActor();
-	if (!IsValid(HitActor) || !HitActor->Implements<UInteractable>())
+	if (!IsValid(HitActor) || !HitActor->Implements<UInteractable>() || !IInteractable::Execute_CanInteract(GetOwner(), HitActor))
 	{
 		return nullptr;
 	}

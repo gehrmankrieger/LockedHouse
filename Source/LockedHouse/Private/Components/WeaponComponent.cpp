@@ -2,6 +2,8 @@
 
 
 #include "Components/WeaponComponent.h"
+#include "GameFramework/Controller.h"
+#include "LockedHouseCharacter.h"
 
 // Sets default values for this component's properties
 UWeaponComponent::UWeaponComponent()
@@ -22,6 +24,16 @@ void UWeaponComponent::BeginPlay()
 
 void UWeaponComponent::Fire()
 {
+	ALockedHouseCharacter* LockedHouseCharacter = Cast<ALockedHouseCharacter>(GetOwner());
+	if (!IsValid(LockedHouseCharacter))
+	{
+		return;
+	}
+
+	LockedHouseCharacter->GetController()->GetPlayerViewPoint(Where, Facing);
+	FVector Start = Where;
+	FVector End = Start + Facing.Vector() * WeaponRange;
+
 }
 
 void UWeaponComponent::Reload()

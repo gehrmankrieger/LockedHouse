@@ -2,6 +2,7 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/HealthComponent.h"
+#include "LockedHouseCollision.h"
 
 AHealthPickup::AHealthPickup()
 {
@@ -12,6 +13,7 @@ AHealthPickup::AHealthPickup()
 	Sphere->SetCollisionObjectType(ECC_WorldDynamic);
 	Sphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 	Sphere->SetCollisionResponseToChannel(ECC_Visibility, ECR_Block);
+	Sphere->SetCollisionResponseToChannel(WeaponCollision::WeaponChannel, ECR_Ignore);
 	Sphere->SetGenerateOverlapEvents(false);
 	Sphere->SetSphereRadius(60.f);
 	SetRootComponent(Sphere);
@@ -34,8 +36,17 @@ void AHealthPickup::Interact_Implementation(AActor* Interactor)
 		return;
 	}
 
-	UHealthComponent* HealthComponent = Interactor->FindComponentByClass<UHealthComponent>();
+	UHealthComponent* HealthComponent = FindUHealthComponent(Interactor);
 	if (!HealthComponent || HealthComponent->IsFull() || HealthComponent->IsDead())
+	{
+		return;
+	}
+	else
+	{
+
+	}
+
+	if (!CanInteract(Interactor))
 	{
 		return;
 	}
@@ -54,4 +65,25 @@ void AHealthPickup::Interact_Implementation(AActor* Interactor)
 		UE_LOG(LogTemp, Log, TEXT("%s used up, destroying"), *GetName());
 		Destroy();
 	}
+}
+
+bool AHealthPickup::CanInteract_Implementation(AActor* Interactor)
+{
+	UHealthComponent* Health = FindUHealthComponent(Interactor);
+	if(!IsValid(Health))
+	{
+		return false;
+	}
+
+	if(Health->IsFull())
+	{
+		return false;
+	}
+
+	return true;
+}
+
+UHealthComponent* AHealthPickup::FindUHealthComponent(AActor* Who) const
+{
+	return Who->FindComponentByClass<UHealthComponent>();
 }

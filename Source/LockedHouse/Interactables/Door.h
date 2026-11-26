@@ -28,6 +28,8 @@ protected:
 
 	virtual void Interact_Implementation(AActor* Interactor) override;
 
+	virtual bool CanInteract_Implementation(AActor* Interactor) override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Door")
 	TObjectPtr<USceneComponent> SceneRoot;
 

@@ -115,7 +115,15 @@ void ADoor::Interact_Implementation(AActor* Interactor)
 	if (Board->CheckDoorTag(UnlockedTag))
 	{
 		UE_LOG(LogTemp, Log, TEXT("unlocked"));
-		!bIsOpen ? Timeline->Play() : Timeline->Reverse();
+
+		if (!bIsOpen)
+		{
+			Timeline->Play();
+		}
+		else
+		{
+			Timeline->Reverse();
+		}
 		bIsOpen = !bIsOpen;
 	}
 }
@@ -132,3 +140,12 @@ void ADoor::Tick(float DeltaTime)
 
 }
 
+bool ADoor::CanInteract_Implementation(AActor* Interactor)
+{
+	if (Timeline->IsPlaying())
+	{
+		return false;
+	}
+
+	return true;
+}

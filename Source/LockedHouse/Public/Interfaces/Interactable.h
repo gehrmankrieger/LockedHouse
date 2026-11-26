@@ -23,4 +23,9 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
 	void Interact(AActor* Interactor);
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
+	bool CanInteract(AActor* Interactor);
+
+	virtual bool CanInteract_Implementation(AActor* Interactor) { return true; }
+
 };
