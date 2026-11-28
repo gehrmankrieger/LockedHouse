@@ -87,6 +87,9 @@ void ALockedHouseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInp
 
 		// Bandaging
 		EnhancedInputComponent->BindAction(UseBandageAction, ETriggerEvent::Started, this, &ALockedHouseCharacter::UseBandage);
+
+		// Firing
+		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ALockedHouseCharacter::Fire);
 	}
 	else
 	{
@@ -246,4 +249,14 @@ void ALockedHouseCharacter::UseBandage()
 
 	UE_LOG(LogTemp, Warning, TEXT("Healed for %.0f. Health is now %.0f."), BandageHealAmount, Health->GetHealth());
 
+}
+
+void ALockedHouseCharacter::Fire() {
+
+	if (!IsAiming())
+	{
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("Fire Action executed."));
 }

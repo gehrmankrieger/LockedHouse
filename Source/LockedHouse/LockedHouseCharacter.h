@@ -81,6 +81,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> UseBandageAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> FireAction;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Input")
 	TObjectPtr<UTimelineComponent> AimTimeline;
 
@@ -128,6 +131,8 @@ protected:
 	void UpdateMovementMode();
 
 	void UseBandage();
+
+	void Fire();
 
 public:
 
